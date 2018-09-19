@@ -92,31 +92,35 @@ dfSource = pd.read_csv(file_to_open)
 #print(dfSource)
 #print(dfSource.shape)
 
+'''
 ## To accept input from a SQL Server database
-#import pyodbc
-#server = '<Server name>'
-#database = '<mydatabase>'
-#username = '<myusername>'
-# password = '<mypassword>'
-# dbConnection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
-# cursor = dbConnection.cursor()
-#
-# cursor.execute("<query>")
-# tableRow = cursor.fetchone()
-# while tableRow:
-#     dfSource = tableRow[0]
-#     tableRow = cursor.fetchone()
+import pyodbc
+server = '<Server name>'
+database = '<mydatabase>'
+username = '<myusername>'
+password = '<mypassword>'
+dbConnection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+cursor = dbConnection.cursor()
 
+cursor.execute("<query>")
+tableRow = cursor.fetchone()
+while tableRow:
+    dfSource = tableRow[0]
+    tableRow = cursor.fetchone()
+'''
 
+'''
 ## To accept input from a JSON API
-#import json
-#apiPath = requests.get('<file location>')
-#apiData = apiPath.json()
-#dfSource = pd.DataFrame(apiData['column name'])
+import json
+apiPath = requests.get('<file location>')
+apiData = apiPath.json()
+dfSource = pd.DataFrame(apiData['column name'])
+'''
 
-
-# First observation time is hardcoded to initialise date range
-startDate = '2016-01-07 00:00:00'
+# First observation datetime is extracted from the data source to calculate the date range
+initDate = dfSource.iat[0,0]
+initDate = initDate - 21600
+startDate = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(initDate))
 
 # Initialising data frames
 dfDateTimeConvert = pd.DataFrame()
@@ -171,7 +175,8 @@ CREATE TABLE <Table name>
  ,[Rainfall] DECIMAL(2,2)
 )
 '''
-
+# Creating connection string and inserting values into the table
+'''
 # dbConnStr = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 # cursor = dbConnStr.cursor()
 # for index, row in dfDeaccumRainfall.iterrows():
@@ -179,11 +184,10 @@ CREATE TABLE <Table name>
 #           dbConnStr.commit()
 #cursor.close()
 #dbConnStr.close()
+'''
 
 
-'''
-Finding peak period within supplied time range
-'''
+## Finding peak period within supplied time range
 
 checkFlag = input("To calculate peak value enter Y : ")
 if (checkFlag == 'y') | (checkFlag == 'Y'):
